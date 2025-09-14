@@ -58,12 +58,13 @@ venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 ```
 
-3. Setup `.env` file:
+3. Setup `.env` file (copy from `.env.example`):
 
 ```env
 USDA_API_KEY=your_api_key_here
 DATABASE_URL=postgresql://user:password@localhost:5432/mealcalorie
 JWT_SECRET=your_jwt_secret
+API_RATE_LIMIT=15
 ```
 
 4. Run the server:

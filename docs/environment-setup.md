@@ -24,8 +24,8 @@ JWT_SECRET=your-super-secure-jwt-secret-key-here-change-this-in-production
 JWT_ALGORITHM=HS256
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-# API Configuration
-API_RATE_LIMIT=100  # requests per minute per user
+# API Configuration - Original Requirement: 15 requests per minute from same IP
+API_RATE_LIMIT=15  # requests per minute per IP address
 
 # Cache Configuration  
 CACHE_TTL=3600  # Cache TTL in seconds (1 hour)

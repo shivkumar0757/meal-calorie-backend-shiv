@@ -14,7 +14,7 @@ tests/
 └── run_tests.py             ✅ TDD test runner
 ```
 
-### Test Coverage (12 Total Tests)
+### Test Coverage (15 Total Tests) - Updated for Original Requirements
 - **Authentication**: 6 tests
   - Register success ✅
   - Register duplicate email ✅  
@@ -22,9 +22,12 @@ tests/
   - Login wrong password ✅
   - Login non-existent user ✅
   
-- **Calorie Lookup**: 5 tests
+- **Calorie Lookup**: 8 tests
   - Get calories success ✅
   - Requires authentication ✅
+  - Specific dishes: "macaroni and cheese" ✅
+  - Specific dishes: "grilled salmon" ✅
+  - Specific dishes: "paneer butter masala" ✅
   - Dish not found ✅
   - Invalid servings (zero) ✅
   - Negative servings ✅
@@ -39,7 +42,7 @@ tests/
 cd /Users/shivkumar/PycharmProjects/CaloryCounter
 python run_tests.py red
 ```
-**Expected**: All 12 tests FAIL (endpoints don't exist yet)
+**Expected**: All 15 tests FAIL (endpoints don't exist yet)
 
 ### Phase 2: GREEN (Implement to Pass)
 1. Implement minimal endpoints:
@@ -101,9 +104,10 @@ async def get_calories(request: CalorieRequest):
 
 ## 📊 Test Summary
 
-- **Simple & Focused**: Only 12 essential tests
+- **Simple & Focused**: Only 15 essential tests (includes specific dishes from requirements)
 - **Fast Feedback**: Quick to run and understand  
-- **Complete Coverage**: All 3 core endpoints tested
+- **Complete Coverage**: All 3 core endpoints tested + specific test cases
 - **TDD Ready**: Designed to fail first, then pass
+- **Original Compliance**: Tests specific dishes: "macaroni and cheese", "grilled salmon", "paneer butter masala"
 
 Ready to start the RED-GREEN-REFACTOR cycle! 🎯

@@ -31,8 +31,8 @@ Build a backend service that allows users to register/login and input a dish nam
 	-	Security
 	-	JWT authentication.
 	-	Password hashing with bcrypt.
-	-	Store secrets in .env.
-	-	Rate limiting middleware.
+	-	Store secrets in .env with .env.example template.
+	-	Rate limiting middleware (15 requests per minute from same IP).
 	-	Performance
 	-	Async DB queries (PostgreSQL with asyncpg).
 	-	Async USDA API calls with httpx.
@@ -105,10 +105,10 @@ CREATE TABLE meals (
 ---
 
 7. Testing Scenarios
-	-	Valid dish lookup (e.g., “macaroni and cheese”).
-	-	Invalid dish.
+	-	Specific dishes: "macaroni and cheese", "grilled salmon", "paneer butter masala".
+	-	Invalid dish lookup.
 	-	Zero/negative servings.
-	-	Multiple matches.
+	-	Multiple similar matches (fuzzy matching).
 
 ---
 

@@ -67,7 +67,21 @@ def test_get_calories_success():
     assert data["source"] == "USDA FoodData Central"
 ```
 
-#### 2.2 Error Cases Tests
+#### 2.2 Specific Dish Tests (Original Requirements)
+```python
+def test_specific_dishes_from_requirements(specific_test_dishes, authenticated_client):
+    """Test specific dishes mentioned in original requirements"""
+    for dish in specific_test_dishes:
+        calorie_data = {"dish_name": dish, "servings": 1}
+        response = authenticated_client.post("/get-calories", json=calorie_data)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["dish_name"]
+        assert data["calories_per_serving"] > 0
+        assert data["source"] == "USDA FoodData Central"
+```
+
+#### 2.3 Error Cases Tests
 ```python
 def test_get_calories_dish_not_found():
     """Test calorie lookup for invalid dish"""
@@ -140,6 +154,15 @@ def authenticated_client():
 @pytest.fixture
 def test_user():
     """Sample user data for tests"""
+
+@pytest.fixture
+def specific_test_dishes():
+    """Specific dishes from original requirements"""
+    return [
+        "macaroni and cheese",
+        "grilled salmon", 
+        "paneer butter masala"
+    ]
 ```
 
 ## 🎯 Success Criteria

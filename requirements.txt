@@ -28,5 +28,8 @@ black==23.11.0
 flake8==6.1.0
 isort==5.12.0
 
-# Optional: Performance & Monitoring
+# Rate Limiting (Original Requirement)
+slowapi==0.1.9
+
+# Optional: Performance & Monitoring  
 redis==5.0.1  # For future caching

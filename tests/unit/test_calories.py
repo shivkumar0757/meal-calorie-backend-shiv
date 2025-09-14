@@ -32,8 +32,8 @@ class TestCalorieLookup:
         # Act - call without auth token
         response = client.post("/get-calories", json=test_calorie_data)
         
-        # Assert
-        assert response.status_code == 401
+        # Assert - FastAPI HTTPBearer returns 403 when no token provided
+        assert response.status_code == 403
 
     def test_get_calories_dish_not_found(self, authenticated_client):
         """RED: Test calorie lookup for invalid dish"""
@@ -77,3 +77,24 @@ class TestCalorieLookup:
         
         # Assert
         assert response.status_code == 422  # Validation error
+
+    def test_specific_dishes_from_requirements(self, authenticated_client, specific_test_dishes):
+        """Test specific dishes mentioned in original requirements"""
+        for dish in specific_test_dishes:
+            # Arrange
+            calorie_data = {
+                "dish_name": dish,
+                "servings": 1
+            }
+            
+            # Act
+            response = authenticated_client.post("/get-calories", json=calorie_data)
+            
+            # Assert
+            assert response.status_code == 200, f"Failed for dish: {dish}"
+            data = response.json()
+            assert data["dish_name"], f"Missing dish_name for: {dish}"
+            assert data["servings"] == 1, f"Wrong servings for: {dish}"
+            assert data["calories_per_serving"] > 0, f"No calories found for: {dish}"
+            assert data["total_calories"] == data["calories_per_serving"], f"Wrong calculation for: {dish}"
+            assert data["source"] == "USDA FoodData Central", f"Wrong source for: {dish}"
