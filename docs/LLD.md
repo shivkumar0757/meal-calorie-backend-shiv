@@ -1,50 +1,41 @@
 # Low Level Design (LLD)
 
-## 📁 File Structure
+## File Structure
 ```
 src/
-├── main.py                 # FastAPI app entry point
-├── routers/
-│   ├── auth.py            # Auth endpoints
-│   └── calories.py        # Calorie endpoints  
-├── controllers/
-│   ├── auth_controller.py # User auth logic
-│   └── calorie_controller.py # Calorie logic
-├── models/
-│   ├── user.py           # User SQLAlchemy model
-│   └── meal.py           # Meal SQLAlchemy model
-├── schemas/
-│   ├── auth_schemas.py   # Pydantic auth models
-│   └── calorie_schemas.py # Pydantic calorie models
-├── services/
-│   └── usda_service.py   # USDA API client
+├── config/
+│   └── settings.py       # Profile-based configuration
 ├── database/
 │   └── connection.py     # DB setup & sessions
+├── models/
+│   └── user.py          # User SQLAlchemy model (only)
+├── routers/
+│   ├── auth.py          # Auth endpoints with logic
+│   └── calories.py      # Calorie endpoints with logic  
+├── schemas/
+│   ├── auth.py          # Pydantic auth models
+│   └── calories.py      # Pydantic calorie models
+├── services/
+│   └── usda_service.py  # USDA API client with caching
 └── utils/
-    ├── auth_utils.py     # JWT & password helpers
-    └── exceptions.py     # Custom exceptions
+    ├── auth.py          # JWT & password helpers
+    └── dependencies.py  # FastAPI dependencies
 ```
 
 ---
 
-## 🔑 Core Implementation
+## Core Implementation
 
 ### 1. Authentication Flow
 
 **Router** (`routers/auth.py`)
 ```python
-@router.post("/register")
-async def register(user_data: RegisterRequest) -> TokenResponse:
-    return await auth_controller.register_user(user_data)
-```
-
-**Controller** (`controllers/auth_controller.py`)
-```python
-async def register_user(user_data: RegisterRequest) -> TokenResponse:
-    # 1. Hash password
-    # 2. Create user in DB
+@router.post("/register", response_model=TokenResponse, status_code=201)
+async def register(user_data: UserCreate, db: Session = Depends(get_db)):
+    # 1. Hash password with bcrypt
+    # 2. Create user in DB using User.create()
     # 3. Generate JWT token
-    # 4. Return token
+    # 4. Return TokenResponse with user data
 ```
 
 **Key Functions:**

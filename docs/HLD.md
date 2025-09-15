@@ -1,6 +1,6 @@
 # High Level Design (HLD)
 
-## 🎯 System Overview
+## System Overview
 
 Simple 3-layer FastAPI backend that handles user auth and calorie lookups via USDA API.
 
@@ -19,63 +19,63 @@ Simple 3-layer FastAPI backend that handles user auth and calorie lookups via US
 
 ---
 
-## 🏗️ Architecture Components
+## Architecture Components
 
 ### 1. API Layer (`src/routers/`)
-- **auth.py** - `/auth/register`, `/auth/login` endpoints
-- **calories.py** - `/get-calories` endpoint
+- **auth.py** - `/auth/register`, `/auth/login` endpoints with business logic
+- **calories.py** - `/get-calories` endpoint with business logic
 
-### 2. Business Layer (`src/controllers/`)
-- **auth_controller.py** - User registration/login logic
-- **calorie_controller.py** - Calorie calculation logic
+### 2. Service Layer (`src/services/`)
+- **usda_service.py** - USDA API integration with caching
 
 ### 3. Data Layer 
-- **models/** - SQLAlchemy user & meal models
-- **services/usda_service.py** - USDA API integration
+- **models/** - SQLAlchemy user model
+- **schemas/** - Pydantic request/response schemas
 - **database/** - DB connection & session management
+
+### 4. Utilities (`src/utils/`)
+- **auth.py** - JWT token management and password hashing
+- **dependencies.py** - FastAPI dependency injection for authentication
 
 ---
 
-## 🔄 Request Flow
+## Request Flow
 
 ### Auth Flow
 ```
-POST /auth/register → auth_controller → User model → JWT token
-POST /auth/login    → auth_controller → User model → JWT token
+POST /auth/register → auth router → User model → JWT token response
+POST /auth/login    → auth router → User model → JWT token response
 ```
 
 ### Calorie Flow
 ```
-POST /get-calories → calorie_controller → usda_service → USDA API
-                                      ↓
-                   Response ← format_response ← parse_nutrients
+POST /get-calories → calories router → usda_service → USDA API (with cache)
+                                    ↓
+                   Response ← formatted response ← parsed nutrients
 ```
 
 ---
 
-## 🗄️ Data Models
+## Data Models
 
 ### Users Table
 ```sql
 users (id, first_name, last_name, email, password_hash, created_at)
 ```
 
-### Meals Table (Optional History)
-```sql
-meals (id, user_id, dish_name, servings, calories_per_serving, total_calories, created_at)
-```
+Note: No meals table - calorie lookups are stateless per requirements.
 
 ---
 
-## 🔧 External Dependencies
+## External Dependencies
 
-- **USDA FoodData Central API** - Food/nutrient data
-- **PostgreSQL** - User & meal storage
+- **USDA FoodData Central API** - Food/nutrient data with caching
+- **SQLite (dev) / PostgreSQL (prod)** - User storage
 - **JWT** - Token-based authentication
 
 ---
 
-## ⚡ Key Design Decisions
+## Key Design Decisions
 
 1. **Async FastAPI** - For concurrent USDA API calls
 2. **JWT Auth** - Stateless authentication

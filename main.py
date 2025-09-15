@@ -1,7 +1,8 @@
+"""
+Calory Counter FastAPI Application
+"""
 from fastapi import FastAPI, Request
-from dotenv import load_dotenv
 import logging
-import os
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -10,20 +11,9 @@ from src.routers import calories, auth
 from src.database.connection import init_db
 from src.config.settings import settings
 
-# Env profile
-profile = os.getenv("ENVIRONMENT", "dev")
-env_file = f".env.{profile}"
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Load profile .env if present, else default
-if os.path.exists(env_file):
-    load_dotenv(env_file)
-    logger.info(f"📁 Loaded profile: {env_file}")
-else:
-    load_dotenv()
-    logger.info("📁 Loaded default .env file")
+logger.info(f"Environment: {settings.environment.upper()}")
 
 # Rate limit per-IP (from settings.api_rate_limit)
 rate_limit_per_minute = settings.api_rate_limit
@@ -33,9 +23,9 @@ limiter = Limiter(
 )
 
 app = FastAPI(
-    title="Calory Counter API", 
+    title="Calory Counter API",
     description="A FastAPI backend for calorie lookup and user management",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Init DB
@@ -46,7 +36,9 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
-logger.info(f"Rate limiting enabled: {rate_limit_per_minute} requests per minute per IP")
+logger.info(
+    f"Rate limiting enabled: {rate_limit_per_minute} requests per minute per IP"
+)
 
 app.include_router(auth.router)
 app.include_router(calories.router)
@@ -56,9 +48,9 @@ app.include_router(calories.router)
 async def root():
     """Health check"""
     return {
-        "message": "Calory Counter API is running", 
+        "message": "Calory Counter API is running",
         "status": "healthy",
-        "version": "1.0.0"
+        "version": "1.0.0",
     }
 
 
@@ -76,5 +68,5 @@ async def rate_limit_test(request: Request):
     return {
         "message": f"Rate limiting active: {rate_limit_per_minute} requests per minute per IP",
         "your_ip": request.client.host,
-        "status": "success"
+        "status": "success",
     }

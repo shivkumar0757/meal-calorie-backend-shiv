@@ -19,7 +19,7 @@ This document provides comprehensive information on using the USDA FoodData Cent
 
 The API uses API key authentication passed as a query parameter.
 
-**Your API Key:** `3BMzegtK2gNa27syouXr8Tq9SvGljApjUuCAfjV1`
+**Your API Key:** `your_actual_api_key_here`
 
 ⚠️ **Security Note:** Never commit your API key to version control. Use environment variables.
 

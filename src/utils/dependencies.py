@@ -1,6 +1,7 @@
 """
 FastAPI dependencies for authentication and authorization
 """
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -18,18 +19,18 @@ security = HTTPBearer()
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> User:
     """
     Dependency to get current authenticated user from JWT token
-    
+
     Args:
         credentials: Bearer token from Authorization header
         db: Database session
-        
+
     Returns:
         User: Current authenticated user
-        
+
     Raises:
         HTTPException: If token is invalid or user not found
     """
@@ -37,7 +38,7 @@ def get_current_user(
         # Verify and decode token
         token_data = verify_token(credentials.credentials)
         user_id = int(token_data.get("sub"))
-        
+
         # Get user from database
         user = User.get_by_id(db, user_id)
         if not user:
@@ -47,10 +48,10 @@ def get_current_user(
                 detail="User not found",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         logger.debug(f"Authenticated user: {user.email}")
         return user
-        
+
     except ValueError:
         logger.warning("Invalid user ID in token")
         raise HTTPException(
@@ -68,22 +69,24 @@ def get_current_user(
 
 
 def get_current_user_optional(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False)),
-    db: Session = Depends(get_db)
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(
+        HTTPBearer(auto_error=False)
+    ),
+    db: Session = Depends(get_db),
 ) -> Optional[User]:
     """
     Optional authentication dependency - returns None if no token provided
-    
+
     Args:
         credentials: Optional bearer token
         db: Database session
-        
+
     Returns:
         Optional[User]: Current user if authenticated, None otherwise
     """
     if not credentials:
         return None
-    
+
     try:
         return get_current_user(credentials, db)
     except HTTPException:
